@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>❌ Видалити акаунт</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <p>{{ form.password.label }}<br>{{ form.password() }}</p>
+    <p>{{ form.submit(class="btn btn-danger") }}</p>
+</form>
+{% endblock %}

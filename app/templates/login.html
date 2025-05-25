@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Увійти</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <p>{{ form.email.label }}<br>{{ form.email(size=32) }}</p>
+    <p>{{ form.password.label }}<br>{{ form.password(size=32) }}</p>
+    <p>{{ form.submit() }}</p>
+    <p><a href="{{ url_for('auth.reset_request') }}">Забули пароль?</a></p>
+</form>
+<p>Ще не маєте акаунта? <a href="{{ url_for('auth.register') }}">Зареєструйтесь</a></p>
+{% endblock %}

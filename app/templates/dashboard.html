@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block container_class %}main-container{% endblock %}
+{% block content %}
+<div>
+    <div class="card-container">
+        <div class="card blue">
+            <h3>💰 Поточний баланс</h3>
+            <p><strong>{{ "%.2f"|format(balance) }} грн</strong></p>
+        </div>
+    
+        <div class="card green recent-transactions-card">
+            <div class="card-header">
+                <h3>📋 Останні транзакції</h3>
+                <a href="{{ url_for('transactions.list_transactions') }}" class="small-btn">Всі транзакції</a>
+            </div>
+            <ul class="recent-list">
+                {% for t in last_transactions %}
+                    <li>
+                        <span class="type-label {{ 'income' if t.type == 'income' else 'expense' }}">
+                            {{ 'Дохід' if t.type == 'income' else 'Витрата' }}
+                        </span>
+                        <span class="date">{{ t.date }}</span>
+                        {% if t.category %}
+                            <span class="category">– {{ t.category.name }}</span>
+                        {% endif %}
+                        <span class="amount">– {{ "%.2f"|format(t.amount) }} грн</span>
+                    </li>
+                {% else %}
+                    <li><em>Немає записів</em></li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="card orange">
+            <div class="card-header">
+                <h3>📊 Структура витрат</h3>
+                <a href="{{ url_for('categories.index') }}" class="btn-small-link">Всі категорії</a>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="expensesChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card lightblue">
+            <h3>📈 Динаміка балансу</h3>
+            <div class="chart-wrapper">
+                <canvas id="balanceChart"></canvas>
+            </div>
+        </div>
+        <a href="{{ url_for('transactions.add_transaction') }}" class="fab"></a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const ctxPie = document.getElementById('expensesChart').getContext('2d');
+            new Chart(ctxPie, {
+                type: 'pie',
+                data: {
+                    labels: {{ chart_labels|default([])|tojson }},
+                    datasets: [{
+                        label: 'Витрати по категоріях',
+                        data: {{ chart_values|default([])|tojson }},
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+    
+            const ctxLine = document.getElementById('balanceChart').getContext('2d');
+            new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: {{ trend_labels|tojson }},
+                    datasets: [{
+                        label: 'Баланс (грн)',
+                        data: {{ trend_values|tojson }},
+                        borderColor: '#27ae60',
+                        backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+    
+</div>
+{% endblock %}

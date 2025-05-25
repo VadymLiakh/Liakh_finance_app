@@ -1,0 +1,52 @@
+{% block container_class %}{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Панель адміністратора{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+    <h1>Панель адміністратора</h1>
+
+    <p class="welcome">👋 <strong>Ласкаво просимо, {{ current_user.username }}!</strong></p>
+    <p>Нижче ви можете керувати користувачами:</p>
+
+    <div class="admin-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Ім'я</th>
+                    <th>Email</th>
+                    <th>Роль</th>
+                    <th>Дата реєстрації</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role.name }}</td>
+                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        {% if user.email != 'financeee.app@gmail.com' %}
+                        <form method="POST" action="{{ url_for('admin.toggle_role', user_id=user.id) }}" style="display:inline;">
+                            <button type="submit" class="btn-small">
+                                {% if user.role.name == 'admin' %}Зробити звичайним{% else %}Зробити адміном{% endif %}
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}" style="display:inline;" onsubmit="return confirm('Ви впевнені, що хочете видалити цього користувача?');">
+                            <button type="submit" class="btn-small red">Видалити</button>
+                        </form>
+                        {% else %}
+                        <em>Головний адмін</em>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

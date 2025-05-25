@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>🔐 Скидання пароля</h2>
+  <p>Введіть новий пароль для вашого акаунта.</p>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <p>{{ form.password.label }}<br>{{ form.password() }}</p>
+    <p>{{ form.confirm_password.label }}<br>{{ form.confirm_password() }}</p>
+    <p>{{ form.submit(class="btn btn-primary") }}</p>
+  </form>
+{% endblock %}

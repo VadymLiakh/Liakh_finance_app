@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>➕ Додати транзакцію</h2>
+<form method="POST" id="transactionform">
+    {{ form.hidden_tag() }}
+    <p>{{ form.amount.label }}<br>{{ form.amount(step=0.01) }}</p>
+    <p>{{ form.type.label }}<br>{{ form.type(id="type-select") }}</p>
+    <div id="category-field">
+        <p>{{ form.category.label }}<br>{{ form.category() }}</p>
+    </div>
+    <p>{{ form.date.label }}<br>{{ form.date() }}</p>
+    <p>{{ form.description.label }}<br>{{ form.description(rows=2) }}</p>
+    <p>{{ form.submit() }}</p>
+</form>
+<script>
+    const typeSelect = document.getElementById('type-select');
+    const categoryField = document.getElementById('category-field');
+
+    function toggleCategoryField() {
+        if (typeSelect.value === 'income') {
+            categoryField.style.display = 'none';
+        } else {
+            categoryField.style.display = 'block';
+        }
+    }
+
+    toggleCategoryField();
+
+    typeSelect.addEventListener('change', toggleCategoryField);
+</script>
+
+{% endblock %}

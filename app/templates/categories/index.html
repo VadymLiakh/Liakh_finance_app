@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block container_class %}container wide-container{% endblock %}
+
+{% block content %}
+<h2>📁 Категорії</h2>
+
+<form method="POST" class="category-form">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.name.label }}<br>
+        {{ form.name(size=32) }}
+    </p>
+    <p>{{ form.submit(class="small-btn") }}</p>
+</form>
+
+<hr>
+
+<table>
+    <thead>
+        <tr>
+            <th>Назва</th>
+            <th>К-сть транзакцій</th>
+            <th>Сума</th>
+            <th>Дії</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in categories %}
+        <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ c.transaction_count }}</td>
+            <td>{{ "%.2f"|format(c.total_amount or 0) }} грн</td>
+            <td class="action-cell">
+                <a href="{{ url_for('categories.edit', id=c.id) }}" class="small-btn">✏️</a>
+                {% if c.transaction_count == 0 %}
+                    <a href="{{ url_for('categories.delete', cat_id=c.id) }}" class="small-btn red">🗑️</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4" style="text-align:center;">Немає категорій</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

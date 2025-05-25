@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block container_class %}main-container{% endblock %}
+{% block content %}
+<h2>⚙️ Налаштування профілю</h2>
+
+<div class="settings-grid">
+  <div class="card light">
+    <h3>👤 Зміна профілю</h3>
+    <form method="POST">
+      {{ profile_form.hidden_tag() }}
+      <p>{{ profile_form.username.label }}<br>{{ profile_form.username(size=32) }}</p>
+      <p>{{ profile_form.email.label }}<br>{{ profile_form.email(size=32) }}</p>
+      <p>{{ profile_form.submit(class="btn btn-primary") }}</p>
+    </form>
+  </div>
+
+  <div class="card light">
+    <h3>🔒 Зміна паролю</h3>
+    <form method="POST">
+      {{ password_form.hidden_tag() }}
+      <p>{{ password_form.current_password.label }}<br>{{ password_form.current_password(size=32) }}</p>
+      <p>{{ password_form.new_password.label }}<br>{{ password_form.new_password(size=32) }}</p>
+      <p>{{ password_form.confirm_password.label }}<br>{{ password_form.confirm_password(size=32) }}</p>
+      <p>{{ password_form.submit(class="btn btn-primary") }}</p>
+    </form>
+  </div>
+
+  <div class="card light danger-zone">
+    <h3>🗑️ Видалити акаунт</h3>
+    <form method="POST" action="{{ url_for('settings.delete_account') }}">
+      <p>Цю дію не можна скасувати.</p>
+      <button type="submit" class="btn btn-danger">Видалити акаунт</button>
+    </form>
+  </div>
+</div>
+
+<style>
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  .danger-zone {
+    background-color: #fff6f6;
+    border: 1px solid #e74c3c;
+  }
+  .btn.btn-danger {
+    background: linear-gradient(to right, #e74c3c, #c0392b);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .btn.btn-danger:hover {
+    background: linear-gradient(to right, #c0392b, #a93226);
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block container_class %}container wide-container{% endblock %}
+
+{% block content %}
+<h2>📋 Всі транзакції</h2>
+
+<form method="GET" class="filter-form">
+    <label>Тип:
+        <select name="type">
+            <option value="">Всі</option>
+            <option value="income" {% if request.args.get('type') == 'income' %}selected{% endif %}>Дохід</option>
+            <option value="expense" {% if request.args.get('type') == 'expense' %}selected{% endif %}>Витрата</option>
+        </select>
+    </label>
+    <label>Категорія:
+        <select name="category">
+            <option value="">Всі</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if request.args.get('category') == cat.id|string %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>Дата від:
+        <input type="date" name="date_from" value="{{ request.args.get('date_from', '') }}">
+    </label>
+    <label>Дата до:
+        <input type="date" name="date_to" value="{{ request.args.get('date_to', '') }}">
+    </label>
+    <label>Мін. сума:
+        <input type="number" name="min_amount" step="0.01" value="{{ request.args.get('min_amount', '') }}">
+    </label>
+    <label>Макс. сума:
+        <input type="number" name="max_amount" step="0.01" value="{{ request.args.get('max_amount', '') }}">
+    </label>
+    <button type="submit" class="small-btn">🔍 Пошук</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Тип</th>
+            <th>Категорія</th>
+            <th>Сума</th>
+            <th>Опис</th>
+            <th>Редагувати</th>
+            <th>Видалити</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in transactions %}
+        <tr>
+            <td>{{ t.date }}</td>
+            <td>{{ 'Дохід' if t.type == 'income' else 'Витрата' }}</td>
+            <td>{{ t.category.name if t.category else '' }}</td>
+            <td>{{ "%.2f"|format(t.amount) }} грн</td>
+            <td>{{ t.description or '' }}</td>
+            <td class="action-cell">
+                <a href="{{ url_for('transactions.edit_transaction', transaction_id=t.id) }}" class="small-btn">Редагувати</a>
+            </td>
+            <td class="action-cell">
+                <form method="POST" action="{{ url_for('transactions.delete_transaction', transaction_id=t.id) }}" onsubmit="return confirm('Ви впевнені, що хочете видалити транзакцію?');">
+                    <button type="submit" class="small-btn red">Видалити</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" style="text-align:center;">Немає транзакцій</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
